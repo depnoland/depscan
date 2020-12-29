@@ -1,8 +1,8 @@
 import { ACCEPT, USER_AGENT  } from '../consts/headers.ts'
 import { EXTRACT_IMPORT_URL, SENTENCE_SPLICE } from '../consts/regexps.ts'
-import { Dependancy } from '../types/dependancy.ts'
+import { Dependency } from '../types/dependency.ts'
 
-function parseDeps (url: string, debug = false): Promise<Dependancy[]> {
+function parseDeps (url: string, debug = false): Promise<Dependency[]> {
   // deno-lint-ignore no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     if (debug) console.log('scan started: ' + url)
@@ -15,7 +15,7 @@ function parseDeps (url: string, debug = false): Promise<Dependancy[]> {
     if (debug) console.log('ㄴsource downloaded')
     
     if (!response) return
-    const deps: Dependancy[] = []
+    const deps: Dependency[] = []
 
     const sentences = response.split(SENTENCE_SPLICE)
     for (const index in sentences) {
@@ -26,7 +26,7 @@ function parseDeps (url: string, debug = false): Promise<Dependancy[]> {
         const dep = sentence.split(EXTRACT_IMPORT_URL)[1]
         if (!dep) continue
         if (!dep.endsWith('.js') && !dep.endsWith('.ts')) continue
-        if (debug) console.log('ㄴdependancy found: ' + dep)
+        if (debug) console.log('ㄴdependency found: ' + dep)
         if (!dep.startsWith('http://') && !dep.startsWith('https://')) {
           deps.push({ isScaned: false, url: new URL(dep, url).toString() })
         } else deps.push({ isScaned: false, url: dep })
@@ -38,7 +38,7 @@ function parseDeps (url: string, debug = false): Promise<Dependancy[]> {
   })
 }
 
-async function parseDepsDeep (deps: Dependancy[], debug = false): Promise<Dependancy[]> {
+async function parseDepsDeep (deps: Dependency[], debug = false): Promise<Dependency[]> {
   for (const index in deps) {
     if (!deps[index].isScaned) {
       deps[index].isScaned = true

@@ -1,9 +1,9 @@
 import { scanDeps } from '../mod.ts'
 
-const dependancies = await scanDeps('https://deno.land/x/harmony/examples/ping.ts', {
+const dependencies = await scanDeps('https://deno.land/x/harmony/examples/ping.ts', {
   recursive: true,
   debug: true
 })
 
-console.log(dependancies)
-console.log(dependancies.length + ' dependancies found in this file')
+console.log(dependencies)
+console.log(dependencies.length + ' dependencies found in this file')

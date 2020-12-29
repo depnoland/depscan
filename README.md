@@ -1,4 +1,4 @@
-# depscan - scan dependancies from given url
+# depscan - scan dependencies from given url
 ![depno banner](https://github.com/depnoland/depno.land/raw/main/docs/depno-banner.png)
 These utils are part of [depno.land project](https://github.com/depnoland/depno.land)
 

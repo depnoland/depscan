@@ -1,4 +1,4 @@
-export interface Dependancy {
+export interface Dependency {
   isScaned: boolean,
   url: string
 }
