@@ -23,7 +23,7 @@ function parseDeps (url: string, debug = false): Promise<Dependency[]> {
 
       if (!sentence.startsWith('import') && !sentence.startsWith('export')) continue
       for (let i = Number(index); i < sentences.length; i++) {
-        const dep = sentence.split(EXTRACT_IMPORT_URL)[1]
+        const dep = sentences[i].split(EXTRACT_IMPORT_URL)[1]
         if (!dep) continue
         if (!dep.endsWith('.js') && !dep.endsWith('.ts')) continue
         if (debug) console.log('ㄴdependency found: ' + dep)
