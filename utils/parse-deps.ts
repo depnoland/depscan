@@ -1,6 +1,7 @@
 import { ACCEPT, USER_AGENT  } from '../consts/headers.ts'
-import { EXTRACT_IMPORT_URL, SENTENCE_SPLICE } from '../consts/regexps.ts'
+//import { EXTRACT_IMPORT_URL, SENTENCE_SPLICE } from '../consts/regexps.ts'
 import { Dependency } from '../types/dependency.ts'
+import { parse } from "https://deno.land/x/swc@0.2.1/mod.ts"
 
 function parseDeps (url: string, debug = false): Promise<Dependency[]> {
   // deno-lint-ignore no-async-promise-executor
@@ -17,7 +18,23 @@ function parseDeps (url: string, debug = false): Promise<Dependency[]> {
     if (!response) return
     const deps: Dependency[] = []
 
-    const sentences = response.split(SENTENCE_SPLICE)
+    const ast = parse(response, {
+      target: "es2019",
+      syntax: "typescript",
+      comments: false,
+    })
+    for (const body of ast.body) {
+      if (body.type != 'ImportDeclaration'
+        && body.type != 'ExportAllDeclaration'
+        && body.type != 'ExportNamedDeclaration') continue
+      if (body.source == null) continue
+      const dep = body.source.value
+      if (debug) console.log('ㄴdependency found: ' + dep)
+      if (!dep.startsWith('http://') && !dep.startsWith('https://')) {
+        deps.push({ isScaned: false, url: new URL(dep, url).toString() })
+      } else deps.push({ isScaned: false, url: dep })
+    }
+    /*const sentences = response.split(SENTENCE_SPLICE)
     for (const index in sentences) {
       const sentence = sentences[index].trim()
 
@@ -32,7 +49,7 @@ function parseDeps (url: string, debug = false): Promise<Dependency[]> {
         } else deps.push({ isScaned: false, url: dep })
         break
       }
-    }
+    }*/
 
    resolve(deps)
   })

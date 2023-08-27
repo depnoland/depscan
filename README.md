@@ -9,5 +9,5 @@ https://deno.land/x/depscan
 See [scanHarmony.ts](example/scanHarmony.ts)
 
 ## license
-Copyright 2020 **depno.land** collaborators.\
+Copyright 2020~2023 **depno.land** collaborators.\
 See [LICENCE](LICENSE) file to get more infomation.
