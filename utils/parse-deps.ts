@@ -17,23 +17,24 @@ function parseDeps (url: string, debug = false): Promise<Dependency[]> {
     
     if (!response) return
     const deps: Dependency[] = []
-
-    const ast = parse(response, {
-      target: "es2019",
-      syntax: "typescript",
-      comments: false,
-    })
-    for (const body of ast.body) {
-      if (body.type != 'ImportDeclaration'
-        && body.type != 'ExportAllDeclaration'
-        && body.type != 'ExportNamedDeclaration') continue
-      if (body.source == null) continue
-      const dep = body.source.value
-      if (debug) console.log('ㄴdependency found: ' + dep)
-      if (!dep.startsWith('http://') && !dep.startsWith('https://')) {
-        deps.push({ isScaned: false, url: new URL(dep, url).toString() })
-      } else deps.push({ isScaned: false, url: dep })
-    }
+    try {
+      const ast = parse(response, {
+        target: "es2019",
+        syntax: "typescript",
+        comments: false,
+      })
+      for (const body of ast.body) {
+        if (body.type != 'ImportDeclaration'
+          && body.type != 'ExportAllDeclaration'
+          && body.type != 'ExportNamedDeclaration') continue
+        if (body.source == null) continue
+        const dep = body.source.value
+        if (debug) console.log('ㄴdependency found: ' + dep)
+        if (!dep.startsWith('http://') && !dep.startsWith('https://')) {
+          deps.push({ isScaned: false, url: new URL(dep, url).toString() })
+        } else deps.push({ isScaned: false, url: dep })
+      }
+    } catch (err) { reject(err) }
     /*const sentences = response.split(SENTENCE_SPLICE)
     for (const index in sentences) {
       const sentence = sentences[index].trim()
